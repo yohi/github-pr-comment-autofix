@@ -168,15 +168,20 @@ GitHubのSPA遷移（例えば「Conversation」タブから「Files changed」�
 `MutationObserver` を使用し、PRのタイムラインやDiffが表示されるコンテナ要素（例: `#files` や `.js-diff-container`）の変更を監視する。新しいレビューコメントがDOMに追加されたことを検知した瞬間に、その横に「AI修正」ボタンを注入する。
 
 ```javascript
-// 実装イメージ（概念コード）  
-const observer = new MutationObserver((mutations) => {  
-  for (const mutation of mutations) {  
-    if (mutation.addedNodes.length) {  
-      injectAIButtons(); // 未処理のコメントにボタンを追加  
-    }  
-  }  
-});  
-observer.observe(document.querySelector('.repository-content'), { childList: true, subtree: true });
+// 実装イメージ（概念コード）
+const container = document.querySelector('.repository-content');
+if (!container) {
+  console.warn('GitHub PR container not found');
+} else {
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.addedNodes.length) {
+        injectAIButtons(); // 未処理のコメントにボタンを追加
+      }
+    }
+  });
+  observer.observe(container, { childList: true, subtree: true });
+}
 ```
 
 ---
